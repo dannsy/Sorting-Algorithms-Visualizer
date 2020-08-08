@@ -534,11 +534,11 @@ class Algorithms:
 
 
 if __name__ == "__main__":
-    array_size = 8192
+    array_size = 8192 * 2 * 2
     algo = Algorithms(array_size, True)
     copy_array = algo.array.copy()
     # print(copy_array)
-    # algo.heap_sort()
+    # algo.quick_sort()
     # print(algo.array)
 
     # print(check_sort_validity(copy_array, algo.array))
