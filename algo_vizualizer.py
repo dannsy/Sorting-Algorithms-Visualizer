@@ -45,6 +45,9 @@ class AlgoVisualizer(Algorithms):
     merge_but = pygame.Rect(MERGE_BUT_X, BUT_Y, BUT_WIDTH, BUT_HEIGHT)
     quick_but = pygame.Rect(QUICK_BUT_X, BUT_Y, BUT_WIDTH, BUT_HEIGHT)
     heap_but = pygame.Rect(HEAP_BUT_X, BUT_Y, BUT_WIDTH, BUT_HEIGHT)
+    but_list = [regen_but, select_but, insert_but, merge_but, quick_but, heap_but]
+    but_order = ["regenerate", "selection", "insertion", "merge", "quick", "heap"]
+
     slide_bar = pygame.Rect(SLIDE_X, BUT_Y, SLIDE_SPACING * 5 + 10, BUT_HEIGHT)
     size_32 = pygame.Rect(SLIDE_X, BUT_Y, SLIDE_WIDTH, BUT_HEIGHT)
     size_64 = pygame.Rect(SLIDE_X + SLIDE_SPACING * 1, BUT_Y, SLIDE_WIDTH, BUT_HEIGHT)
@@ -52,6 +55,8 @@ class AlgoVisualizer(Algorithms):
     size_256 = pygame.Rect(SLIDE_X + SLIDE_SPACING * 3, BUT_Y, SLIDE_WIDTH, BUT_HEIGHT)
     size_512 = pygame.Rect(SLIDE_X + SLIDE_SPACING * 4, BUT_Y, SLIDE_WIDTH, BUT_HEIGHT)
     size_1024 = pygame.Rect(SLIDE_X + SLIDE_SPACING * 5, BUT_Y, SLIDE_WIDTH, BUT_HEIGHT)
+    tick_list = [size_32, size_64, size_128, size_256, size_512, size_1024]
+    tick_size = [32, 64, 128, 256, 512, 1024]
 
     ICON = pygame.image.load(os.path.join(os.getcwd(), "assets", "img", "chart.jpg"))
 
@@ -66,81 +71,27 @@ class AlgoVisualizer(Algorithms):
     def draw_buttons(self):
         """Drawing the buttons for the pygame GUI
         """
-        if self.regen_but.collidepoint(pygame.mouse.get_pos()):
-            pygame.draw.rect(self.display, LIGHT_GREY, self.regen_but)
-        else:
-            pygame.draw.rect(self.display, WHITE, self.regen_but)
-        if self.select_but.collidepoint(pygame.mouse.get_pos()):
-            pygame.draw.rect(self.display, LIGHT_GREY, self.select_but)
-        else:
-            pygame.draw.rect(self.display, WHITE, self.select_but)
-        if self.insert_but.collidepoint(pygame.mouse.get_pos()):
-            pygame.draw.rect(self.display, LIGHT_GREY, self.insert_but)
-        else:
-            pygame.draw.rect(self.display, WHITE, self.insert_but)
-        if self.merge_but.collidepoint(pygame.mouse.get_pos()):
-            pygame.draw.rect(self.display, LIGHT_GREY, self.merge_but)
-        else:
-            pygame.draw.rect(self.display, WHITE, self.merge_but)
-        if self.quick_but.collidepoint(pygame.mouse.get_pos()):
-            pygame.draw.rect(self.display, LIGHT_GREY, self.quick_but)
-        else:
-            pygame.draw.rect(self.display, WHITE, self.quick_but)
-        if self.heap_but.collidepoint(pygame.mouse.get_pos()):
-            pygame.draw.rect(self.display, LIGHT_GREY, self.heap_but)
-        else:
-            pygame.draw.rect(self.display, WHITE, self.heap_but)
+        for but in self.but_list:
+            if but.collidepoint(pygame.mouse.get_pos()):
+                color = LIGHT_GREY
+            else:
+                color = WHITE
+            pygame.draw.rect(self.display, color, but)
 
         pygame.draw.rect(self.display, WHITE, self.slide_bar)
-        pygame.draw.rect(self.display, LIGHT_GREY, self.size_32)
-        pygame.draw.rect(self.display, LIGHT_GREY, self.size_64)
-        pygame.draw.rect(self.display, LIGHT_GREY, self.size_128)
-        pygame.draw.rect(self.display, LIGHT_GREY, self.size_256)
-        pygame.draw.rect(self.display, LIGHT_GREY, self.size_512)
-        pygame.draw.rect(self.display, LIGHT_GREY, self.size_1024)
-        if self.length == 32:
-            pygame.draw.rect(self.display, BLACK, self.size_32)
-        elif self.length == 64:
-            pygame.draw.rect(self.display, BLACK, self.size_64)
-        elif self.length == 128:
-            pygame.draw.rect(self.display, BLACK, self.size_128)
-        elif self.length == 256:
-            pygame.draw.rect(self.display, BLACK, self.size_256)
-        elif self.length == 512:
-            pygame.draw.rect(self.display, BLACK, self.size_512)
-        elif self.length == 1024:
-            pygame.draw.rect(self.display, BLACK, self.size_1024)
+        for tick, size in zip(self.tick_list, self.tick_size):
+            if self.length == size:
+                color = BLACK
+            else:
+                color = LIGHT_GREY
+            pygame.draw.rect(self.display, color, tick)
 
         font = pygame.font.SysFont("calibri", 20)
-        text = font.render("regenerate", True, BLACK)
-        text_x = self.REGEN_BUT_X + (self.BUT_WIDTH - text.get_width()) // 2
-        text_y = self.BUT_Y + (self.BUT_HEIGHT - text.get_height()) // 2
-        self.display.blit(text, (text_x, text_y))
-
-        text = font.render("selection", True, BLACK)
-        text_x = self.SELECT_BUT_X + (self.BUT_WIDTH - text.get_width()) // 2
-        text_y = self.BUT_Y + (self.BUT_HEIGHT - text.get_height()) // 2
-        self.display.blit(text, (text_x, text_y))
-
-        text = font.render("insertion", True, BLACK)
-        text_x = self.INSERT_BUT_X + (self.BUT_WIDTH - text.get_width()) // 2
-        text_y = self.BUT_Y + (self.BUT_HEIGHT - text.get_height()) // 2
-        self.display.blit(text, (text_x, text_y))
-
-        text = font.render("merge", True, BLACK)
-        text_x = self.MERGE_BUT_X + (self.BUT_WIDTH - text.get_width()) // 2
-        text_y = self.BUT_Y + (self.BUT_HEIGHT - text.get_height()) // 2
-        self.display.blit(text, (text_x, text_y))
-
-        text = font.render("quick", True, BLACK)
-        text_x = self.QUICK_BUT_X + (self.BUT_WIDTH - text.get_width()) // 2
-        text_y = self.BUT_Y + (self.BUT_HEIGHT - text.get_height()) // 2
-        self.display.blit(text, (text_x, text_y))
-
-        text = font.render("heap", True, BLACK)
-        text_x = self.HEAP_BUT_X + (self.BUT_WIDTH - text.get_width()) // 2
-        text_y = self.BUT_Y + (self.BUT_HEIGHT - text.get_height()) // 2
-        self.display.blit(text, (text_x, text_y))
+        for but, content in zip(self.but_list, self.but_order):
+            text = font.render(content, True, BLACK)
+            text_x = but.centerx - text.get_width() // 2
+            text_y = but.centery - text.get_height() // 2
+            self.display.blit(text, (text_x, text_y))
 
         text = font.render("small", True, BLACK)
         text_x = int(self.SLIDE_X - text.get_width() * 1.5)
@@ -197,33 +148,22 @@ class AlgoVisualizer(Algorithms):
         """
         if self.regen_but.collidepoint(pos):
             self.reinitialize_arr(self.length)
-        elif self.select_but.collidepoint(pos):
-            self.sorted = False
-            self.selection_sort()
-        elif self.insert_but.collidepoint(pos):
-            self.sorted = False
-            self.insertion_sort()
-        elif self.merge_but.collidepoint(pos):
-            self.sorted = False
-            self.merge_sort()
-        elif self.quick_but.collidepoint(pos):
-            self.sorted = False
-            self.quick_sort()
-        elif self.heap_but.collidepoint(pos):
-            self.sorted = False
-            self.heap_sort()
-        elif self.size_32.collidepoint(pos):
-            self.reinitialize_arr(32)
-        elif self.size_64.collidepoint(pos):
-            self.reinitialize_arr(64)
-        elif self.size_128.collidepoint(pos):
-            self.reinitialize_arr(128)
-        elif self.size_256.collidepoint(pos):
-            self.reinitialize_arr(256)
-        elif self.size_512.collidepoint(pos):
-            self.reinitialize_arr(512)
-        elif self.size_1024.collidepoint(pos):
-            self.reinitialize_arr(1024)
+
+        sort_dict = {
+            "selection": self.selection_sort,
+            "insertion": self.insertion_sort,
+            "merge": self.merge_sort,
+            "quick": self.quick_sort,
+            "heap": self.heap_sort,
+        }
+        for but, content in zip(self.but_list[1:], self.but_order[1:]):
+            if but.collidepoint(pos):
+                self.sorted = False
+                sort_dict[content]()
+
+        for tick, size in zip(self.tick_list, self.tick_size):
+            if tick.collidepoint(pos):
+                self.reinitialize_arr(size)
 
     def main(self):
         """Main function of this module
