@@ -62,6 +62,13 @@ class AlgoVisualizer(Algorithms):
 
     def __init__(self):
         super().__init__(128, True)
+        self.sort_dict = {
+            "selection": self.selection_sort,
+            "insertion": self.insertion_sort,
+            "merge": self.merge_sort,
+            "quick": self.quick_sort,
+            "heap": self.heap_sort,
+        }
         self.display = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
         pygame.display.set_caption("Sorting Algorithm Visualizer")
         pygame.display.set_icon(self.ICON)
@@ -71,13 +78,6 @@ class AlgoVisualizer(Algorithms):
     def draw_buttons(self):
         """Drawing the buttons for the pygame GUI
         """
-        for but in self.but_list:
-            if but.collidepoint(pygame.mouse.get_pos()):
-                color = LIGHT_GREY
-            else:
-                color = WHITE
-            pygame.draw.rect(self.display, color, but)
-
         pygame.draw.rect(self.display, WHITE, self.slide_bar)
         for tick, size in zip(self.tick_list, self.tick_size):
             if self.length == size:
@@ -88,6 +88,11 @@ class AlgoVisualizer(Algorithms):
 
         font = pygame.font.SysFont("calibri", 20)
         for but, content in zip(self.but_list, self.but_order):
+            if but.collidepoint(pygame.mouse.get_pos()):
+                color = LIGHT_GREY
+            else:
+                color = WHITE
+            pygame.draw.rect(self.display, color, but)
             text = font.render(content, True, BLACK)
             text_x = but.centerx - text.get_width() // 2
             text_y = but.centery - text.get_height() // 2
@@ -148,18 +153,10 @@ class AlgoVisualizer(Algorithms):
         """
         if self.regen_but.collidepoint(pos):
             self.reinitialize_arr(self.length)
-
-        sort_dict = {
-            "selection": self.selection_sort,
-            "insertion": self.insertion_sort,
-            "merge": self.merge_sort,
-            "quick": self.quick_sort,
-            "heap": self.heap_sort,
-        }
         for but, content in zip(self.but_list[1:], self.but_order[1:]):
             if but.collidepoint(pos):
                 self.sorted = False
-                sort_dict[content]()
+                self.sort_dict[content]()
 
         for tick, size in zip(self.tick_list, self.tick_size):
             if tick.collidepoint(pos):
